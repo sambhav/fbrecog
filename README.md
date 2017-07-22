@@ -24,13 +24,17 @@ An unofficial python wrapper for the Facebook face recognition endpoint
 6. Call the recognize method with the following parameters.
 
 ```python
-
-from fbrecog import recognize
-path = '1.jpg' #Insert your image file path here
-access_token = '#######' #Insert your access token obtained from Graph API explorer here
-cookie = '###' #Insert your cookie string here
-fb_dtsg = '###' #Insert the fb_dtsg parameter obtained from Form Data here.
-print(recognize(path,access_token,cookie,fb_dtsg))
+from fbrecog import FBRecog
+path = '1.jpg' # Insert your image file path here
+path2 = '2.jpg' # Insert your image file path here
+access_token = '#######' # Insert your access token obtained from Graph API explorer here
+cookie = '###' # Insert your cookie string here
+fb_dtsg = '###' # Insert the fb_dtsg parameter obtained from Form Data here.
+# Instantiate the recog class
+recog = FBRecog(access_token, cookies, fb_dtsg)
+# Recog class can be used multiple times with different paths
+print(recog.recognize(path))
+print(recog.recognize(path2))
 ```
 ## Please star this repo if it helped :)
 
