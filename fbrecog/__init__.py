@@ -48,7 +48,6 @@ class FBRecog(object):
             if "faceboxes" in payload and payload['faceboxes']:
                 break
 
-        print(payload)
         for recog in payload[0]['faceboxes']:
             name = recog['recognitions']
             if name:
