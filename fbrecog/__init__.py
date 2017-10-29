@@ -34,8 +34,7 @@ class FBRecog(object):
             return response['id']
 
     def _query_recognition_api(self, post_id):
-        result = []
-        payload = ""
+        payload = []
         data = 'recognition_project=composer_facerec&photos[0]=' + post_id
         data += '&target&is_page=false&include_unrecognized_faceboxes=false&include_face_crop_src=true'
         data += '&include_recognized_user_profile_picture=true&include_low_confidence_recognitions=true'
@@ -45,27 +44,18 @@ class FBRecog(object):
         for i in range(20):
             response = requests.post(self.API_URL, data=data, headers=self.headers)
             payload = json.loads(response.text.replace('for (;;);', ''))['payload']
-            if "faceboxes" in payload and payload['faceboxes']:
+            if payload and "faceboxes" in payload[0] and payload[0]['faceboxes']:
                 break
 
-        for recog in payload[0]['faceboxes']:
-            name = recog['recognitions']
-            if name:
-                result.append({'name': name[0]['user']['name'], 'certainity': name[0]['certainty']})
-        return result
+        return payload[0]['faceboxes']
 
-    def recognize(self, path):
-        """Face recognition using Facebook's recognize method
-            Args:
-                path : file path of the photo to be processed
-            Returns:
-                result : array of recognitions with the name of recognized people
-                         and the certainity of each recognition
-        """
+    def recognize_raw(self, path):
+        print('Post data to Facebook, please wait...')
         post_id = self._post_photo(path)
-        result = []
+        result = None
         if post_id != -1:
             try:
+                print("Querying Facebook, please wait...")
                 result = self._query_recognition_api(post_id)
             except (KeyError, IndexError) as e:
                 print("Unable to fetch details. API unresponsive. Please try again later.")
@@ -78,4 +68,20 @@ class FBRecog(object):
 
         print("Finished.")
 
+        return result
+
+    def recognize(self, path):
+        """Face recognition using Facebook's recognize method
+            Args:
+                path : file path of the photo to be processed
+            Returns:
+                result : array of recognitions with the name of recognized people
+                         and the certainity of each recognition
+        """
+        faceboxes = self.recognize_raw(path)
+        result = []
+        for recog in faceboxes:
+            name = recog['recognitions']
+            if name:
+                result.append({'name': name[0]['user']['name'], 'certainity': name[0]['certainty']})
         return result

@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='fbrecog',
-      version='1.4',
+      version='1.6',
       description="An unoffcial wrapper for Facebook's recognition endpoint",
       url='http://github.com/samj1912/fbrecog',
       author='Sambhav Kothari',
